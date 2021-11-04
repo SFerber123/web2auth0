@@ -20,7 +20,7 @@ app.use(
 app.get('/',(req,res)=>{
     res.send(req.oidc.isAuthenticated() ? 'Logged in':'Logged out')
 });
-if(port==3000){
+if(port!=3000){
 app.listen(port, ()=> {
     console.log(`listening on port ${port}`);
 });
