@@ -5,8 +5,7 @@ const fs=require('fs')
 const path=require('path')
 require('dotenv').config();
 const {auth,requiresAuth} = require('express-openid-connect');
-
-const port= process.env.PORT || 3000;
+const port= process.env.PORT;
 app.use(
     auth({
         authRequired:false,
@@ -17,13 +16,11 @@ app.use(
         secret: process.env.SECRET,
     })
 )
-app.get('/',(req,res)=>{
-    res.send(req.oidc.isAuthenticated() ? 'Logged in':'Logged out')
-});
+
 if(port!=3000){
 app.listen(port, ()=> {
     console.log(`listening on port ${port}`);
-});
+})
 } else{
     const sslServer=https.createServer(
         {
@@ -36,4 +33,23 @@ app.listen(port, ()=> {
 
 app.get('/profile',requiresAuth(),(req,res)=> {
     res.send(JSON.stringify(req.oidc.user))
+})
+app.get('/',(req,res)=>{
+    res.send(req.oidc.isAuthenticated() ? 'Logged in':'Logged out')
+});
+
+app.get('/map',requiresAuth(),(req,res)=>{
+    
+res.writeHead(200,{
+    'Content-Type':'text/html'
+    });
+fs.readFile('./index.html',null,function (error, data) {
+    if (error) {
+        res.writeHead(404);
+        res.write('Whoops! File not found!');
+    } else {
+        res.write(data);
+    }
+    res.end();
+    });
 })
