@@ -14,40 +14,61 @@
 
 <body>
 
-<div id="mapid"></div>
+<div id="mapid">
+
+</div>
 <script src="https://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-
-<script>
-    var loadMap = function (id) {
-    var HELSINKI = [60.1708, 24.9375];
-    var map = L.map('mapid');
-    var tile_url = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
-    var layer = L.tileLayer(tile_url, {
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script data-turbolinks-eval="false">
+    var locations=[];
+    var username;
+    var url=window.location.origin;
+    console.log(url)
+    axios.get(url+'/profile/').then(result=>{
+                username=result.data;
+    }).finally(function(){
+        axios.get(window.location.href+'/'+'locations').then(result=>{
+                    locations=result.data;
+            }).finally(function() {var loadMap = function (id) {
+        var ZAGREB = [45.81444,15.97798];
+        
+        var map = L.map('mapid');
+        var tile_url = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
+        var layer = L.tileLayer(tile_url, {
         attribution: 'OSM'
-    });
-    map.addLayer(layer);
-    map.setView(HELSINKI, 19);
-
-    map.locate({setView: true, watch: true}) /* This will return map so you can do chaining */
-        .on('locationfound', function(e){
-            var marker = L.marker([e.latitude, e.longitude]).bindPopup('Your are here :)');
-            var circle = L.circle([e.latitude, e.longitude], e.accuracy/2, {
-                weight: 1,
-                color: 'blue',
-                fillColor: '#cacaca',
-                fillOpacity: 0.2
-            });
-            map.addLayer(marker);
-            map.addLayer(circle);
+        });
+        map.addLayer(layer);
+        map.setView(ZAGREB, 19);
+        map.locate({setView: true, watch: true}) 
+            .on('locationfound', function(e){
+            var marker = L.marker([e.latitude, e.longitude]).bindPopup('You are here. Your latitude is:'+e.latitude+' and your longitude is:'+e.longitude).addTo(map);
+            axios.post(window.location.href+'/'+'location'+'/'+e.latitude+'/'+e.longitude+'/').then();
+            console.log(locations);
+            if(locations.length==0){
+                console.log("usao");
+            }else{
+                for(var i=0;i<locations.length;i++){
+                        if(locations[i][0]!=username){
+                        marker1= new L.marker([locations[i][1],locations[i][2]]).bindPopup('This is users:'+locations[i][0]+' location').addTo(map);
+                        }
+                }
+            }
+           
+            
         })
        .on('locationerror', function(e){
             console.log(e);
             alert("Location access denied.");
         });
-};
+    
+    };
 
-loadMap('map');
-
+    loadMap('map');});
+    })
+    
+        
+      
 
 </script>
 
