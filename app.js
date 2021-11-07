@@ -92,7 +92,7 @@ app.post('/map/location/:latitude/:longitude/',requiresAuth(),(req,res)=>{
         if(isUsernameInArray(locations,userlocation[0])){
             res.end();
         }else{
-            if(locations.length==5){
+            if(locations.length==6){
                 locations.shift();
                 
             }else{

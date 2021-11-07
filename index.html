@@ -59,6 +59,7 @@
             }else{
                 for(var i=0;i<locations.length;i++){
                         if(locations[i][0]!=username){
+                            console.log(locations)
                         marker1= new L.marker([locations[i][1],locations[i][2]]).bindPopup('This is users:'+locations[i][0]+' location. \n Last time logged in is: '+locations[i][3]).addTo(map);
                         }
                 }
