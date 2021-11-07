@@ -6,17 +6,24 @@
 
 <style>
 
-#mapid { height: 1500px; }
-
+#mapid { height: 900px}
+.container {
+    width:100%;
+    text-align:center;
+}
 </style>
 
 </head>
 
 <body>
+        <div class="container">
+                Your latitude is <span id="myLat"></span> and longitude <span id="myLon"></span>
+        </div>
+        <div id="mapid">
+        </div>
+    </div>
 
-<div id="mapid">
 
-</div>
 <script src="https://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
@@ -42,15 +49,18 @@
         map.setView(ZAGREB, 19);
         map.locate({setView: true, watch: true}) 
             .on('locationfound', function(e){
-            var marker = L.marker([e.latitude, e.longitude]).bindPopup('You are here. Your latitude is:'+e.latitude+' and your longitude is:'+e.longitude).addTo(map);
+            var marker = L.marker([e.latitude, e.longitude]).bindPopup('You are here. \n Your latitude is:'+e.latitude+' and your longitude is:'+e.longitude).addTo(map);
             axios.post(window.location.href+'/'+'location'+'/'+e.latitude+'/'+e.longitude+'/').then();
-            console.log(locations);
+            var longitude=e.longitude;
+            var latitude=e.latitude;
+            document.getElementById("myLat").innerHTML= latitude;
+            document.getElementById("myLon").innerHTML= longitude;
+
             if(locations.length==0){
-                console.log("usao");
             }else{
                 for(var i=0;i<locations.length;i++){
                         if(locations[i][0]!=username){
-                        marker1= new L.marker([locations[i][1],locations[i][2]]).bindPopup('This is users:'+locations[i][0]+' location').addTo(map);
+                        marker1= new L.marker([locations[i][1],locations[i][2]]).bindPopup('This is users:'+locations[i][0]+' location. \n Last time logged in is: '+locations[i][3]).addTo(map);
                         }
                 }
             }
@@ -58,7 +68,6 @@
             
         })
        .on('locationerror', function(e){
-            console.log(e);
             alert("Location access denied.");
         });
     

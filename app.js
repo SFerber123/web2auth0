@@ -7,11 +7,11 @@ require('dotenv').config();
 const {auth,requiresAuth} = require('express-openid-connect');
 const port= process.env.PORT;
 var locations= [];
-var user1= ['Zlatko123@mailinator.com','45.76663','15.77883'];
-var user2= ['Vlatko123@mailinator.com','45.77663','15.76883'];
-var user3= ['Mirko123@mailinator.com','45.78663','15.75883'];
-var user4= ['Ratko123@mailinator.com','45.77333','15.73883'];
-var user5= ['Kristijan123@mailinator.com','45.726663','15.71883'];
+var user1= ['Zlatko123@mailinator.com','45.76663','15.77883','2021-11-1 19:00:11'];
+var user2= ['Vlatko123@mailinator.com','45.77663','15.76883','2021-11-2 18:00:11'];
+var user3= ['Mirko123@mailinator.com','45.78663','15.75883','2021-11-3 17:00:11'];
+var user4= ['Ratko123@mailinator.com','45.77333','15.73883','2021-11-4 16:00:11'];
+var user5= ['Kristijan123@mailinator.com','45.726663','15.71883','2021-11-5 20:00:11'];
 locations.push(user1);
 locations.push(user2);
 locations.push(user3);
@@ -48,7 +48,7 @@ app.get('/profile',requiresAuth(),(req,res)=> {
     res.send(JSON.stringify(req.oidc.user.name))
 })
 app.get('/',(req,res)=>{
-    res.send(req.oidc.isAuthenticated() ? 'Logged in':'Logged out')
+    res.send(req.oidc.isAuthenticated() ? 'Welcome user: '+req.oidc.user.name+' you are now logged in. Proceed to this page if you want to access the map: '+process.env.BASE_URL+'/map':'Logged out');
 });
 
 app.get('/map',requiresAuth(),(req,res)=>{
@@ -89,14 +89,16 @@ app.post('/map/location/:latitude/:longitude/',requiresAuth(),(req,res)=>{
         userlocation.push(latitude);
         userlocation.push(longitude);
         userlocation.push(dateTime);
+        console.log(dateTime);
         if(isUsernameInArray(locations,userlocation[0])){
             res.end();
         }else{
             if(locations.length==5){
                 locations.shift();
+                
+            }else{
                 locations.push(userlocation);
             }
-            locations.push(userlocation);
             res.end();
         }
         
