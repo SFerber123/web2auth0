@@ -89,7 +89,6 @@ app.post('/map/location/:latitude/:longitude/',requiresAuth(),(req,res)=>{
         userlocation.push(latitude);
         userlocation.push(longitude);
         userlocation.push(dateTime);
-        console.log(dateTime);
         if(isUsernameInArray(locations,userlocation[0])){
             res.end();
         }else{

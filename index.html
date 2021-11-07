@@ -31,7 +31,6 @@
     var locations=[];
     var username;
     var url=window.location.origin;
-    console.log(url)
     axios.get(url+'/profile/').then(result=>{
                 username=result.data;
     }).finally(function(){
